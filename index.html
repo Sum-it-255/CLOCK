@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Clock</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100svh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #1b1b1b 0%, #000000 100%);
+      color: #00ffcc;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .clock {
+      padding: 40px 60px;
+      border-radius: 20px;
+      background: rgba(19, 122, 98, 0.15);
+      box-shadow: 0 0 30px #00ffcc55, 0 0 10px #00ffccaa inset;
+      border: 2px solid #00ffcc66;
+      backdrop-filter: blur(6px);
+    }
+
+    #time {
+      font-size: 4rem;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+      transition: all 0.3s ease-in-out;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #00ffcc11;
+      border: 1px solid #00ffcc;
+      color: #00ffcc;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #00ffcc33;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock">
+    <h1 id="time">00:00:00</h1>
+  </div>
+  <button onclick="toggleSound()" id="onoff">Turn Off Tick Sound</button>
+  <button onclick="changeFormat()">Change Format</button>
+  <audio id="tickSound" src="clock_sound.mp3" preload="auto"></audio>
+
+  <script>
+    const clocktime = document.querySelector('#time');
+    const sound = document.querySelector('#tickSound');
+    const btnSound = document.querySelector('#onoff');
+
+    let soundEnabled = true;
+    let use12HourFormat = true;
+
+    function updateClock() {
+      const Datetime = new Date();
+      const localtime = {
+        timeZone: 'Asia/Kathmandu',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: use12HourFormat
+      };
+
+      clocktime.textContent = Datetime.toLocaleTimeString('en-US', localtime);
+
+     
+      if (soundEnabled) {
+        sound.pause();
+        sound.currentTime = 0;
+        sound.play().catch(() => {}); 
+        btnSound.textContent = "Turn Off Tick Sound";
+      } else {
+        sound.pause();
+        btnSound.textContent = "Turn On Tick Sound";
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      updateClock();
+    }
+
+    function changeFormat() {
+      use12HourFormat = !use12HourFormat;
+      updateClock(); 
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
